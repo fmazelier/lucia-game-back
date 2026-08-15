@@ -32,8 +32,13 @@ avec le contenu réel de `PHOTOS_PATH`. Pour l'exécuter seul : `npm run seed`.
 | `DATABASE_PATH`  | `./data/database.sqlite` | Fichier SQLite                                               |
 | `PHOTOS_PATH`    | `./data/photos`          | Dossier des photos                                           |
 | `AUTO_SEED`      | `true`                   | Seed automatique au démarrage                                |
+| `VAPID_PUBLIC_KEY`  | —            | Clé publique Web Push (`npx web-push generate-vapid-keys`)     |
+| `VAPID_PRIVATE_KEY` | —            | Clé privée Web Push                                            |
+| `VAPID_SUBJECT`     | `mailto:noreply@localhost` | Contact exigé par la spec (`mailto:` ou `https://`) |
+| `REMINDER_CRON`     | `0 20 * * *` | Heure du rappel quotidien, évaluée dans `TIMEZONE`             |
 
 L'application refuse de démarrer si `USER_LOGIN`, `USER_PIN` ou `JWT_SECRET` sont absents ou invalides.
+Sans les deux clés VAPID, les notifications push sont simplement désactivées (le reste fonctionne).
 
 ## Endpoints
 
@@ -48,6 +53,10 @@ Toutes les routes exigent `Authorization: Bearer <jwt>`, sauf `POST /auth/login`
 | `GET`   | `/days/:date/reward`   | `rewardType` + `rewardContent`, uniquement si le jour est complété (sinon 403).          |
 | `GET`   | `/days`                | Vue d'ensemble (debug/admin). Le type de récompense n'apparaît qu'une fois le jour fini. |
 | `GET`   | `/photos/:id`          | Image binaire, uniquement pour un id du pool autorisé.                                   |
+| `GET`   | `/push/public-key`     | Clé VAPID publique à passer à `PushManager.subscribe()`. 503 si push non configuré.       |
+| `POST`  | `/push/subscribe`      | Corps = `subscription.toJSON()` du navigateur. Idempotent, 204.                          |
+| `POST`  | `/push/unsubscribe`    | `{ endpoint }` → retire l'appareil de la liste de diffusion. 204.                        |
+| `POST`  | `/push/test`           | Envoie une notification immédiate → `{ sent }`. Pratique pour valider un iPhone.        |
 | `GET`   | `/health`              | Sonde publique : `serverDate` faisant foi + bornes du calendrier.                        |
 
 Codes d'erreur métier renvoyés dans le corps des 403 : `CALENDAR_NOT_STARTED`, `CALENDAR_FINISHED`,
@@ -147,6 +156,12 @@ JWT_EXPIRES_IN=365d
 DATABASE_PATH=./data/database.sqlite
 PHOTOS_PATH=./data/photos
 AUTO_SEED=true
+VAPID_PUBLIC_KEY=...
+VAPID_PRIVATE_KEY=...
+VAPID_SUBJECT=mailto:toi@mondomaine.fr
+REMINDER_CRON=0 20 * * *
+VERDACCIO_USER=...
+VERDACCIO_PASSWORD=...
 ```
 
 Aucune configuration nginx supplémentaire n'est nécessaire : CapRover gère le proxy, le TLS et le gzip.
@@ -161,4 +176,5 @@ src/
   database/   connexion SQLite, seed et catalogue de récompenses
   days/       entité Day, tirage des photos, complétion, récompenses
   photos/     entité Photo, service de fichiers protégé
+  push/       abonnements Web Push et rappel quotidien planifié
 ```

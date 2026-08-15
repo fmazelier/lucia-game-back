@@ -20,6 +20,15 @@ export interface AppConfiguration {
   photos: {
     path: string;
   };
+  push: {
+    /** Clés VAPID : si l'une des deux manque, les notifications sont désactivées. */
+    vapidPublicKey: string;
+    vapidPrivateKey: string;
+    /** Contact exigé par la spec Web Push (mailto: ou https:). */
+    vapidSubject: string;
+    /** Expression cron du rappel quotidien, évaluée dans `timezone`. */
+    reminderCron: string;
+  };
   /** Lance le seed (photos + jours) automatiquement au démarrage. */
   autoSeed: boolean;
 }
@@ -49,6 +58,12 @@ export function configuration(): AppConfiguration {
     },
     photos: {
       path: resolve(process.cwd(), process.env.PHOTOS_PATH ?? './data/photos'),
+    },
+    push: {
+      vapidPublicKey: process.env.VAPID_PUBLIC_KEY ?? '',
+      vapidPrivateKey: process.env.VAPID_PRIVATE_KEY ?? '',
+      vapidSubject: process.env.VAPID_SUBJECT ?? 'mailto:noreply@localhost',
+      reminderCron: process.env.REMINDER_CRON ?? '0 20 * * *',
     },
     autoSeed: (process.env.AUTO_SEED ?? 'true') === 'true',
   };

@@ -6,6 +6,7 @@ import { dirname } from 'node:path';
 import { AppConfiguration } from '../config/configuration';
 import { Day } from '../days/entities/day.entity';
 import { Photo } from '../photos/entities/photo.entity';
+import { PushSubscription } from '../push/entities/push-subscription.entity';
 import { SeedService } from './seed.service';
 
 @Module({
@@ -24,7 +25,7 @@ import { SeedService } from './seed.service';
         return {
           type: 'better-sqlite3' as const,
           database: databasePath,
-          entities: [Day, Photo],
+          entities: [Day, Photo, PushSubscription],
           // Schéma trivial et mono-utilisateur : la synchronisation automatique suffit.
           synchronize: true,
         };

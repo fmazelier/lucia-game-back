@@ -59,6 +59,26 @@ class EnvironmentVariables {
   @IsOptional()
   @IsBooleanString()
   AUTO_SEED?: string;
+
+  @IsOptional()
+  @IsString()
+  VAPID_PUBLIC_KEY?: string;
+
+  @IsOptional()
+  @IsString()
+  VAPID_PRIVATE_KEY?: string;
+
+  @IsOptional()
+  @Matches(/^(mailto:|https:\/\/)/, {
+    message: 'VAPID_SUBJECT doit commencer par mailto: ou https://',
+  })
+  VAPID_SUBJECT?: string;
+
+  @IsOptional()
+  @Matches(/^(\S+\s+){4}\S+$/, {
+    message: 'REMINDER_CRON doit être une expression cron à 5 champs',
+  })
+  REMINDER_CRON?: string;
 }
 
 export function validateEnv(

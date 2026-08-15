@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
@@ -10,6 +11,7 @@ import { validateEnv } from './config/env.validation';
 import { DatabaseModule } from './database/database.module';
 import { DaysModule } from './days/days.module';
 import { PhotosModule } from './photos/photos.module';
+import { PushModule } from './push/push.module';
 
 @Module({
   imports: [
@@ -21,10 +23,12 @@ import { PhotosModule } from './photos/photos.module';
     }),
     // Garde-fou global anti-abus ; la route de login est bien plus restrictive.
     ThrottlerModule.forRoot([{ name: 'default', ttl: 60_000, limit: 300 }]),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     AuthModule,
     PhotosModule,
     DaysModule,
+    PushModule,
   ],
   controllers: [AppController],
   providers: [
