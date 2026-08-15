@@ -19,23 +19,23 @@ avec le contenu réel de `PHOTOS_PATH`. Pour l'exécuter seul : `npm run seed`.
 
 ## Variables d'environnement
 
-| Variable         | Défaut                   | Rôle                                                         |
-| ---------------- | ------------------------ | ------------------------------------------------------------ |
-| `PORT`           | `3000`                   | Port d'écoute                                                |
-| `TIMEZONE`       | `Europe/Paris`           | Fuseau du calcul de « aujourd'hui » côté serveur             |
-| `CORS_ORIGINS`   | toutes                   | Origines autorisées, séparées par des virgules               |
-| `TRUST_PROXY`    | `0`                      | Nombre de reverse proxies devant l'app (1 derrière CapRover) |
-| `USER_LOGIN`     | —                        | Identifiant unique (aucun utilisateur en base)               |
-| `USER_PIN`       | —                        | PIN à 4 chiffres                                             |
-| `JWT_SECRET`     | —                        | Secret de signature, 32 caractères minimum                   |
-| `JWT_EXPIRES_IN` | `365d`                   | Durée de vie du token                                        |
-| `DATABASE_PATH`  | `./data/database.sqlite` | Fichier SQLite                                               |
-| `PHOTOS_PATH`    | `./data/photos`          | Dossier des photos                                           |
-| `AUTO_SEED`      | `true`                   | Seed automatique au démarrage                                |
-| `VAPID_PUBLIC_KEY`  | —            | Clé publique Web Push (`npx web-push generate-vapid-keys`)     |
-| `VAPID_PRIVATE_KEY` | —            | Clé privée Web Push                                            |
-| `VAPID_SUBJECT`     | `mailto:noreply@localhost` | Contact exigé par la spec (`mailto:` ou `https://`) |
-| `REMINDER_CRON`     | `0 20 * * *` | Heure du rappel quotidien, évaluée dans `TIMEZONE`             |
+| Variable            | Défaut                     | Rôle                                                         |
+| ------------------- | -------------------------- | ------------------------------------------------------------ |
+| `PORT`              | `3000`                     | Port d'écoute                                                |
+| `TIMEZONE`          | `Europe/Paris`             | Fuseau du calcul de « aujourd'hui » côté serveur             |
+| `CORS_ORIGINS`      | toutes                     | Origines autorisées, séparées par des virgules               |
+| `TRUST_PROXY`       | `0`                        | Nombre de reverse proxies devant l'app (1 derrière CapRover) |
+| `USER_LOGIN`        | —                          | Identifiant unique (aucun utilisateur en base)               |
+| `USER_PIN`          | —                          | PIN à 4 chiffres                                             |
+| `JWT_SECRET`        | —                          | Secret de signature, 32 caractères minimum                   |
+| `JWT_EXPIRES_IN`    | `365d`                     | Durée de vie du token                                        |
+| `DATABASE_PATH`     | `./data/database.sqlite`   | Fichier SQLite                                               |
+| `PHOTOS_PATH`       | `./data/photos`            | Dossier des photos                                           |
+| `AUTO_SEED`         | `true`                     | Seed automatique au démarrage                                |
+| `VAPID_PUBLIC_KEY`  | —                          | Clé publique Web Push (`npx web-push generate-vapid-keys`)   |
+| `VAPID_PRIVATE_KEY` | —                          | Clé privée Web Push                                          |
+| `VAPID_SUBJECT`     | `mailto:noreply@localhost` | Contact exigé par la spec (`mailto:` ou `https://`)          |
+| `REMINDER_CRON`     | `0 20 * * *`               | Heure du rappel quotidien, évaluée dans `TIMEZONE`           |
 
 L'application refuse de démarrer si `USER_LOGIN`, `USER_PIN` ou `JWT_SECRET` sont absents ou invalides.
 Sans les deux clés VAPID, les notifications push sont simplement désactivées (le reste fonctionne).
@@ -53,10 +53,10 @@ Toutes les routes exigent `Authorization: Bearer <jwt>`, sauf `POST /auth/login`
 | `GET`   | `/days/:date/reward`   | `rewardType` + `rewardContent`, uniquement si le jour est complété (sinon 403).          |
 | `GET`   | `/days`                | Vue d'ensemble (debug/admin). Le type de récompense n'apparaît qu'une fois le jour fini. |
 | `GET`   | `/photos/:id`          | Image binaire, uniquement pour un id du pool autorisé.                                   |
-| `GET`   | `/push/public-key`     | Clé VAPID publique à passer à `PushManager.subscribe()`. 503 si push non configuré.       |
+| `GET`   | `/push/public-key`     | Clé VAPID publique à passer à `PushManager.subscribe()`. 503 si push non configuré.      |
 | `POST`  | `/push/subscribe`      | Corps = `subscription.toJSON()` du navigateur. Idempotent, 204.                          |
 | `POST`  | `/push/unsubscribe`    | `{ endpoint }` → retire l'appareil de la liste de diffusion. 204.                        |
-| `POST`  | `/push/test`           | Envoie une notification immédiate → `{ sent }`. Pratique pour valider un iPhone.        |
+| `POST`  | `/push/test`           | Envoie une notification immédiate → `{ sent }`. Pratique pour valider un iPhone.         |
 | `GET`   | `/health`              | Sonde publique : `serverDate` faisant foi + bornes du calendrier.                        |
 
 Codes d'erreur métier renvoyés dans le corps des 403 : `CALENDAR_NOT_STARTED`, `CALENDAR_FINISHED`,
