@@ -17,32 +17,35 @@ export const REWARDS_SEED: RewardSeed[] = [
   {
     type: RewardType.MOT_DOUX,
     content:
-      'Jour 1 : le compte à rebours commence. Chaque carte retournée nous rapproche.',
+      'Jour 1 : le compte à rebours commence. Chaque carte retournée nous rapproche 😘',
   },
   {
     type: RewardType.ANECDOTE,
     content:
-      'Anecdote : raconte-moi le tout premier détail que tu as remarqué chez moi.',
+      'Malgré son nom, le Pont Neuf est le plus ancien pont de Paris encore en service, construit entre 1578 et 1607.',
   },
   {
     type: RewardType.GAGE,
-    content: 'Gage : envoie un vocal en chantant le refrain de notre chanson.',
+    content:
+      'Gage : envoie un vocal en chantant le refrain de notre chanson (je sais que tu sais exactement celle dont je parle).',
   },
   {
     type: RewardType.PHOTO,
     content: JSON.stringify({
-      photoId: 1,
-      caption: 'Notre photo préférée, celle qui a tout démarré.',
+      photoId: 3,
+      caption:
+        'Première photo de nous deux, on ne savait pas encore que ce serait le début d’une belle histoire.',
     }),
   },
   {
     type: RewardType.BON_MASSAGE,
     content:
-      'Bon pour un massage des épaules de 15 minutes, valable dès nos retrouvailles.',
+      'Bon pour un massage de 15 minutes, valable dès nos retrouvailles.',
   },
   {
     type: RewardType.INDICE_MYSTERE,
-    content: 'Indice 1/5 : ça se mange, et ça vient de très loin.',
+    content:
+      'Indice 1/5 : l’endroit que j’ai choisi se trouve sur une terre où certains arbres ont vu passer plus de royaumes que la plupart des pays d’Europe.',
   },
   {
     type: RewardType.MOT_DOUX,
@@ -52,77 +55,77 @@ export const REWARDS_SEED: RewardSeed[] = [
   {
     type: RewardType.ANECDOTE,
     content:
-      "Anecdote : la fois où j'ai failli rater notre premier rendez-vous.",
+      'Le parvis de Notre-Dame de Paris abrite le "point zéro" des routes de France : toutes les distances kilométriques du pays sont calculées depuis ce point précis.',
   },
   {
     type: RewardType.GAGE,
-    content: 'Gage : envoie un selfie avec la grimace la plus laide possible.',
+    content: 'Gage : envoie un selfie en faisant ta plus belle grimace 🤡',
   },
   {
     type: RewardType.PHOTO,
     content: JSON.stringify({
       photoId: 5,
-      caption: 'Le jour où on riait pour rien.',
+      caption: 'Le sauna se souvient encore de notre ardeur 🫠',
     }),
   },
   {
     type: RewardType.BON_MASSAGE,
-    content: 'Bon pour un massage des pieds pendant un film entier.',
+    content: 'Bon pour te faire dévorer la partie de ton choix 😏',
   },
   {
     type: RewardType.INDICE_MYSTERE,
-    content: "Indice 2/5 : c'est doux, et ça tient dans une valise.",
+    content:
+      'Indice 2/5 : là-bas, certaines plages doivent leur couleur à des fragments minuscules d’anciens habitants de la mer.',
   },
   {
     type: RewardType.MOT_DOUX,
     content:
-      'Trois choses que j’aime chez toi : ton rire, ta patience, ta façon de dire mon prénom.',
+      'Trois choses que j’aime chez toi : ton rire, tes postures bien à toi et ta gentillesse. (et je ne parle même pas de toutes les parties de ton corps.., ça ferait un peu long 😘)',
   },
   {
     type: RewardType.ANECDOTE,
     content:
-      "Anecdote : ce que j'ai pensé exactement la première fois que je t'ai vue.",
+      "La Place de la Concorde abrite le plus grand cadran solaire du monde, matérialisé au sol grâce à l'obélisque égyptien planté en son centre.",
   },
   {
     type: RewardType.GAGE,
     content:
-      'Gage : danse 30 secondes sur la première chanson qui passe et filme-toi.',
+      'Gage : danse 30 secondes sur la première chanson qui passe et filme-toi 👀🤩',
   },
   {
     type: RewardType.PHOTO,
     content: JSON.stringify({
-      photoId: 9,
-      caption: 'Souviens-toi de ce coucher de soleil.',
+      photoId: 18,
+      caption: "Simplement ivres d'amour, rien de plus... 🙃",
     }),
   },
   {
     type: RewardType.BON_MASSAGE,
-    content: 'Bon pour un massage du dos complet, huile chaude incluse.',
+    content: 'Bon pour un massage, huilés et entièrement nus',
   },
   {
     type: RewardType.INDICE_MYSTERE,
-    content: "Indice 3/5 : la couleur, c'est celle de ta robe préférée.",
+    content:
+      'Indice 3/5 : on peut y partir d’un relief assez haut pour trouver de l’air frais, puis finir quelques heures plus tard au bord d’une eau beaucoup plus chaude.',
   },
   {
     type: RewardType.MOT_DOUX,
-    content:
-      "Plus que quelques jours. J'ai déjà préparé la playlist du trajet.",
+    content: "Plus que quelques jours. J'ai tellement hâte de te retrouver ❤️",
   },
   {
     type: RewardType.ANECDOTE,
     content:
-      'Anecdote : le surnom que je te donne dans ma tête et que tu ne connais pas.',
+      "La Tour Eiffel se dilate avec la chaleur : elle peut gagner jusqu'à 15 cm de hauteur en été et penche légèrement du côté opposé au soleil.",
   },
   {
     type: RewardType.GAGE,
-    content:
-      "Gage : appelle-moi et raconte-moi ta journée en n'utilisant que des questions.",
+    content: 'Gage : appelle-moi et raconte-moi quelque chose en français 😈',
   },
   {
     type: RewardType.PHOTO,
     content: JSON.stringify({
       photoId: 13,
-      caption: 'Toi, exactement comme je pense à toi.',
+      caption: 'Pendant que toi tu jouais avec ton oeuf 🤫',
     }),
   },
   {
@@ -132,7 +135,8 @@ export const REWARDS_SEED: RewardSeed[] = [
   },
   {
     type: RewardType.INDICE_MYSTERE,
-    content: 'Indice 4/5 : tu en parles depuis des mois sans le savoir.',
+    content:
+      'Indice 4/5 : cette terre est bien plus longue qu’elle n’est large ; à certains endroits, on peut la traverser d’un bord à l’autre en moins d’une heure de route.',
   },
   {
     type: RewardType.MOT_DOUX,
@@ -140,6 +144,7 @@ export const REWARDS_SEED: RewardSeed[] = [
   },
   {
     type: RewardType.INDICE_MYSTERE,
-    content: 'Indice 5/5 : ouvre la porte. La surprise est arrivée.',
+    content:
+      "Dernier indice : il n’y en a pas (sorry 😘). Le seul vrai mystère, c’est pourquoi tu me manques autant alors que je sais déjà que je vais te serrer dans mes bras aujourd'hui",
   },
 ];
