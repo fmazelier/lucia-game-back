@@ -19,18 +19,19 @@ avec le contenu réel de `PHOTOS_PATH`. Pour l'exécuter seul : `npm run seed`.
 
 ## Variables d'environnement
 
-| Variable         | Défaut                   | Rôle                                             |
-| ---------------- | ------------------------ | ------------------------------------------------ |
-| `PORT`           | `3000`                   | Port d'écoute                                    |
-| `TIMEZONE`       | `Europe/Paris`           | Fuseau du calcul de « aujourd'hui » côté serveur |
-| `CORS_ORIGINS`   | toutes                   | Origines autorisées, séparées par des virgules   |
-| `USER_LOGIN`     | —                        | Identifiant unique (aucun utilisateur en base)   |
-| `USER_PIN`       | —                        | PIN à 4 chiffres                                 |
-| `JWT_SECRET`     | —                        | Secret de signature, 32 caractères minimum       |
-| `JWT_EXPIRES_IN` | `365d`                   | Durée de vie du token                            |
-| `DATABASE_PATH`  | `./data/database.sqlite` | Fichier SQLite                                   |
-| `PHOTOS_PATH`    | `./data/photos`          | Dossier des photos                               |
-| `AUTO_SEED`      | `true`                   | Seed automatique au démarrage                    |
+| Variable         | Défaut                   | Rôle                                                         |
+| ---------------- | ------------------------ | ------------------------------------------------------------ |
+| `PORT`           | `3000`                   | Port d'écoute                                                |
+| `TIMEZONE`       | `Europe/Paris`           | Fuseau du calcul de « aujourd'hui » côté serveur             |
+| `CORS_ORIGINS`   | toutes                   | Origines autorisées, séparées par des virgules               |
+| `TRUST_PROXY`    | `0`                      | Nombre de reverse proxies devant l'app (1 derrière CapRover) |
+| `USER_LOGIN`     | —                        | Identifiant unique (aucun utilisateur en base)               |
+| `USER_PIN`       | —                        | PIN à 4 chiffres                                             |
+| `JWT_SECRET`     | —                        | Secret de signature, 32 caractères minimum                   |
+| `JWT_EXPIRES_IN` | `365d`                   | Durée de vie du token                                        |
+| `DATABASE_PATH`  | `./data/database.sqlite` | Fichier SQLite                                               |
+| `PHOTOS_PATH`    | `./data/photos`          | Dossier des photos                                           |
+| `AUTO_SEED`      | `true`                   | Seed automatique au démarrage                                |
 
 L'application refuse de démarrer si `USER_LOGIN`, `USER_PIN` ou `JWT_SECRET` sont absents ou invalides.
 
@@ -111,6 +112,43 @@ docker run -d -p 3000:3000 --env-file .env \
   -e DATABASE_PATH=./data/database.sqlite -e PHOTOS_PATH=./data/photos \
   -v "$PWD/data:/app/data" lucia-game-back
 ```
+
+## Déploiement CapRover
+
+Le fichier [captain-definition](captain-definition) pointe sur le `Dockerfile` : CapRover construit
+l'image lui-même et sert l'app derrière son propre nginx (TLS Let's Encrypt inclus).
+
+1. Sur le VPS, créer le dossier persistant et lui donner l'uid du user `node` de l'image :
+   ```bash
+   mkdir -p /opt/lucia-game/data/photos && chown -R 1000:1000 /opt/lucia-game
+   ```
+2. Dashboard CapRover → **Apps → One-Click/Create** → nom `lucia-api`, cocher **Has Persistent Data**.
+3. Onglet **App Configs** :
+   - **Persistent Directories** : `Path in App = /app/data`, `Path on Host = /opt/lucia-game/data`.
+   - **Environmental Variables** : voir ci-dessous (`TRUST_PROXY=1` est indispensable).
+   - **Instance Count** : rester à **1** (SQLite ne supporte pas plusieurs conteneurs).
+4. Onglet **HTTP Settings** : **Container HTTP Port = 3000**, activer HTTPS puis **Force HTTPS**.
+5. Depuis le poste de dev : `npm i -g caprover` puis `caprover deploy` à la racine du projet.
+6. Copier les photos dans `/opt/lucia-game/data/photos` puis **redémarrer l'app** (la synchronisation
+   des photos a lieu au démarrage).
+
+Variables à coller dans **Bulk Edit** :
+
+```
+PORT=3000
+TIMEZONE=Europe/Paris
+CORS_ORIGINS=https://lucia.mondomaine.fr
+TRUST_PROXY=1
+USER_LOGIN=...
+USER_PIN=....
+JWT_SECRET=...
+JWT_EXPIRES_IN=365d
+DATABASE_PATH=./data/database.sqlite
+PHOTOS_PATH=./data/photos
+AUTO_SEED=true
+```
+
+Aucune configuration nginx supplémentaire n'est nécessaire : CapRover gère le proxy, le TLS et le gzip.
 
 ## Structure
 

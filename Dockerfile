@@ -26,6 +26,9 @@ ENV NODE_ENV=production \
 
 WORKDIR /app
 
+# tzdata : garantit la résolution des fuseaux IANA utilisés pour calculer le jour courant.
+RUN apk add --no-cache tzdata
+
 COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 COPY --from=builder --chown=node:node /app/dist ./dist
 COPY --chown=node:node package.json ./

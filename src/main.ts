@@ -24,6 +24,13 @@ async function bootstrap(): Promise<void> {
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
+  // Derrière un reverse proxy (nginx de CapRover), sans ça req.ip vaut l'IP du proxy
+  // et le rate limiting du login s'appliquerait à tout le monde d'un coup.
+  const trustProxy = configService.get('trustProxy', { infer: true });
+  if (trustProxy > 0) {
+    app.set('trust proxy', trustProxy);
+  }
+
   app.disable('x-powered-by');
 
   const port = configService.get('port', { infer: true });

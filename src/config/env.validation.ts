@@ -51,6 +51,12 @@ class EnvironmentVariables {
   CORS_ORIGINS?: string;
 
   @IsOptional()
+  @Matches(/^\d+$/, {
+    message: 'TRUST_PROXY doit être un entier (0 = aucun reverse proxy)',
+  })
+  TRUST_PROXY?: string;
+
+  @IsOptional()
   @IsBooleanString()
   AUTO_SEED?: string;
 }

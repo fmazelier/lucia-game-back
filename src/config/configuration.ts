@@ -5,6 +5,8 @@ export interface AppConfiguration {
   /** Fuseau utilisé pour déterminer « le jour courant » côté serveur. */
   timezone: string;
   corsOrigins: string[] | true;
+  /** Nombre de reverse proxies de confiance devant l'app (0 = exposée directement). */
+  trustProxy: number;
   auth: {
     login: string;
     pin: string;
@@ -32,6 +34,7 @@ export function configuration(): AppConfiguration {
     port: Number.parseInt(process.env.PORT ?? '3000', 10),
     timezone: process.env.TIMEZONE ?? 'Europe/Paris',
     corsOrigins: corsOrigins.length > 0 ? corsOrigins : true,
+    trustProxy: Number.parseInt(process.env.TRUST_PROXY ?? '0', 10) || 0,
     auth: {
       login: process.env.USER_LOGIN ?? '',
       pin: process.env.USER_PIN ?? '',
