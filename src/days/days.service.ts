@@ -43,11 +43,16 @@ export class DaysService {
   }
 
   /** Config du jour courant, avec tirage paresseux des photos à la première consultation. */
-  async getTodayConfig(): Promise<DayConfigResponse> {
-    const today = this.getCurrentDate();
-    this.assertCalendarIsOpen(today);
+  getTodayConfig(): Promise<DayConfigResponse> {
+    return this.getDayConfig(this.getCurrentDate());
+  }
 
-    const day = await this.ensurePhotoDraw(await this.findDayOrFail(today));
+  /** Config d'un jour donné : un jour manqué reste rattrapable tant que le calendrier est ouvert. */
+  async getDayConfig(date: string): Promise<DayConfigResponse> {
+    this.assertCalendarIsOpen(this.getCurrentDate());
+    this.assertDayIsReachable(date);
+
+    const day = await this.ensurePhotoDraw(await this.findDayOrFail(date));
 
     return {
       date: day.date,
@@ -67,15 +72,7 @@ export class DaysService {
   async completeDay(date: string): Promise<DayStatusResponse> {
     const day = await this.findDayOrFail(date);
 
-    // Anti-triche : impossible de valider un jour futur, même en manipulant l'horloge du client.
-    if (date > this.getCurrentDate()) {
-      throw new ForbiddenException({
-        statusCode: 403,
-        code: 'DAY_NOT_AVAILABLE_YET',
-        message: "Ce jour n'est pas encore disponible.",
-        date,
-      });
-    }
+    this.assertDayIsReachable(date);
 
     let justCompleted = false;
 
@@ -129,6 +126,18 @@ export class DaysService {
       photosDrawn: (day.photoIds?.length ?? 0) > 0,
       rewardType: day.completed ? day.rewardType : null,
     }));
+  }
+
+  /** Anti-triche : un jour futur reste inaccessible, même en manipulant l'horloge du client. */
+  private assertDayIsReachable(date: string): void {
+    if (date > this.getCurrentDate()) {
+      throw new ForbiddenException({
+        statusCode: 403,
+        code: 'DAY_NOT_AVAILABLE_YET',
+        message: "Ce jour n'est pas encore disponible.",
+        date,
+      });
+    }
   }
 
   private assertCalendarIsOpen(today: string): void {

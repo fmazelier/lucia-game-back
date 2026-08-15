@@ -3,7 +3,7 @@
  * Modifier ces deux valeurs suffit à décaler ou rallonger le calendrier :
  * le seed (idempotent) créera les jours manquants au prochain démarrage.
  */
-export const CALENDAR_START_DATE = '2026-08-16';
+export const CALENDAR_START_DATE = '2026-07-25';
 export const CALENDAR_END_DATE = '2026-09-10';
 
 export interface DifficultyTier {

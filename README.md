@@ -43,6 +43,7 @@ Toutes les routes exigent `Authorization: Bearer <jwt>`, sauf `POST /auth/login`
 | ------- | ---------------------- | ---------------------------------------------------------------------------------------- |
 | `POST`  | `/auth/login`          | `{ login, pin }` → `{ accessToken, tokenType, expiresIn }`. 5 tentatives/min max.        |
 | `GET`   | `/days/today`          | Config du jour : difficulté, grille, `photoIds` remélangés, `completed`.                 |
+| `GET`   | `/days/:date/config`   | Même charge utile, pour rejouer un jour manqué. 403 sur un jour futur.                   |
 | `POST`  | `/days/:date/complete` | Marque le jour comme complété. Idempotent (`justCompleted` indique le premier appel).    |
 | `GET`   | `/days/:date/reward`   | `rewardType` + `rewardContent`, uniquement si le jour est complété (sinon 403).          |
 | `GET`   | `/days`                | Vue d'ensemble (debug/admin). Le type de récompense n'apparaît qu'une fois le jour fini. |

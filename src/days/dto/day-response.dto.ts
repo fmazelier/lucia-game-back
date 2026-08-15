@@ -5,7 +5,7 @@ export interface GridSize {
   cols: number;
 }
 
-/** Réponse de GET /days/today : tout ce dont le front a besoin pour monter le plateau. */
+/** Réponse de GET /days/today et GET /days/:date/config : tout ce dont le front a besoin pour monter le plateau. */
 export interface DayConfigResponse {
   date: string;
   dayIndex: number;

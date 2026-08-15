@@ -41,6 +41,16 @@ export class DaysController {
   }
 
   /**
+   * GET /days/:date/config
+   * Même charge utile que /days/today, pour rejouer un jour manqué.
+   * 403 DAY_NOT_AVAILABLE_YET si la date est postérieure au jour courant serveur.
+   */
+  @Get(':date/config')
+  getConfig(@Param() params: DayDateParamDto): Promise<DayConfigResponse> {
+    return this.daysService.getDayConfig(params.date);
+  }
+
+  /**
    * POST /days/:date/complete
    * Marque le jour comme complété. Idempotent : un second appel renvoie le même statut
    * avec `justCompleted: false`. 403 si la date est postérieure au jour courant serveur.
