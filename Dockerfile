@@ -8,8 +8,22 @@ WORKDIR /app
 # better-sqlite3 est un module natif : sans prebuild musl, il est compilé ici.
 RUN apk add --no-cache python3 make g++
 
+# CapRover injecte automatiquement les variables d'environnement de l'app comme build args.
+ARG VERDACCIO_REGISTRY=https://npm.florianmazelier.dev
+ARG VERDACCIO_USER
+ARG VERDACCIO_PASSWORD
+
 COPY package.json package-lock.json ./
-RUN npm ci
+
+# Le package-lock.json résout tous les paquets via le registre privé : sans identifiants, npm ci part en 401.
+RUN if [ -z "${VERDACCIO_USER}" ] || [ -z "${VERDACCIO_PASSWORD}" ]; then \
+      echo "ERREUR : les build args VERDACCIO_USER et VERDACCIO_PASSWORD sont obligatoires." >&2 && exit 1; \
+    fi && \
+    AUTH=$(printf '%s:%s' "${VERDACCIO_USER}" "${VERDACCIO_PASSWORD}" | base64 | tr -d '\n') && \
+    printf 'registry=%s\n//%s/:_auth=%s\n' \
+      "${VERDACCIO_REGISTRY}" "${VERDACCIO_REGISTRY#*://}" "${AUTH}" > .npmrc && \
+    npm ci && \
+    rm -f .npmrc
 
 COPY tsconfig.json tsconfig.build.json nest-cli.json ./
 COPY src ./src
