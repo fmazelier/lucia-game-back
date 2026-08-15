@@ -1,0 +1,16 @@
+services:
+  api:
+    build: .
+    image: lucia-game-back
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    environment:
+      # Chemins internes au conteneur, indépendants du .env local
+      DATABASE_PATH: ./data/database.sqlite
+      PHOTOS_PATH: ./data/photos
+    volumes:
+      # Persistance de la base SQLite et des photos (jamais dans l'image)
+      - ./data:/app/data

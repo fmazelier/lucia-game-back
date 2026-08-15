@@ -1,98 +1,125 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Lucia — backend du calendrier à rebours
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API NestJS du calendrier quotidien **16 août 2026 → 10 septembre 2026** (26 jours).
+Chaque jour propose un memory de photos ; la récompense du jour se débloque une fois la partie terminée.
+Le jeu tourne côté Angular : le backend ne fournit que la configuration du jour, la validation de complétion et la récompense.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## Démarrage
 
 ```bash
-$ npm install
+npm install
+cp .env.example .env          # puis renseigner USER_LOGIN, USER_PIN et JWT_SECRET
+openssl rand -base64 48       # valeur à coller dans JWT_SECRET
+mkdir -p data/photos          # y déposer 1.webp, 2.webp, ... 18.webp
+npm run start:dev
 ```
 
-## Compile and run the project
+Au démarrage, le seed (idempotent) crée les lignes `Day` manquantes et synchronise la table `photos`
+avec le contenu réel de `PHOTOS_PATH`. Pour l'exécuter seul : `npm run seed`.
+
+## Variables d'environnement
+
+| Variable         | Défaut                   | Rôle                                             |
+| ---------------- | ------------------------ | ------------------------------------------------ |
+| `PORT`           | `3000`                   | Port d'écoute                                    |
+| `TIMEZONE`       | `Europe/Paris`           | Fuseau du calcul de « aujourd'hui » côté serveur |
+| `CORS_ORIGINS`   | toutes                   | Origines autorisées, séparées par des virgules   |
+| `USER_LOGIN`     | —                        | Identifiant unique (aucun utilisateur en base)   |
+| `USER_PIN`       | —                        | PIN à 4 chiffres                                 |
+| `JWT_SECRET`     | —                        | Secret de signature, 32 caractères minimum       |
+| `JWT_EXPIRES_IN` | `365d`                   | Durée de vie du token                            |
+| `DATABASE_PATH`  | `./data/database.sqlite` | Fichier SQLite                                   |
+| `PHOTOS_PATH`    | `./data/photos`          | Dossier des photos                               |
+| `AUTO_SEED`      | `true`                   | Seed automatique au démarrage                    |
+
+L'application refuse de démarrer si `USER_LOGIN`, `USER_PIN` ou `JWT_SECRET` sont absents ou invalides.
+
+## Endpoints
+
+Toutes les routes exigent `Authorization: Bearer <jwt>`, sauf `POST /auth/login` et `GET /health`.
+
+| Méthode | Route                  | Description                                                                              |
+| ------- | ---------------------- | ---------------------------------------------------------------------------------------- |
+| `POST`  | `/auth/login`          | `{ login, pin }` → `{ accessToken, tokenType, expiresIn }`. 5 tentatives/min max.        |
+| `GET`   | `/days/today`          | Config du jour : difficulté, grille, `photoIds` remélangés, `completed`.                 |
+| `POST`  | `/days/:date/complete` | Marque le jour comme complété. Idempotent (`justCompleted` indique le premier appel).    |
+| `GET`   | `/days/:date/reward`   | `rewardType` + `rewardContent`, uniquement si le jour est complété (sinon 403).          |
+| `GET`   | `/days`                | Vue d'ensemble (debug/admin). Le type de récompense n'apparaît qu'une fois le jour fini. |
+| `GET`   | `/photos/:id`          | Image binaire, uniquement pour un id du pool autorisé.                                   |
+| `GET`   | `/health`              | Sonde publique : `serverDate` faisant foi + bornes du calendrier.                        |
+
+Codes d'erreur métier renvoyés dans le corps des 403 : `CALENDAR_NOT_STARTED`, `CALENDAR_FINISHED`,
+`DAY_NOT_COMPLETED`, `DAY_NOT_AVAILABLE_YET`.
+
+### Côté Angular, pour les photos
+
+Les images étant protégées par le JWT, `<img src="/photos/1">` ne fonctionne pas : il faut les charger
+en blob puis créer une object URL.
+
+```ts
+this.http
+  .get(`${api}/photos/${id}`, { responseType: 'blob' })
+  .subscribe((blob) => (this.src = URL.createObjectURL(blob)));
+```
+
+## Règles métier
+
+- La date du jour est calculée **exclusivement côté serveur** (`TIMEZONE`) : modifier l'horloge du
+  téléphone n'a aucun effet, et compléter un jour futur est refusé.
+- Hors période : 403 `CALENDAR_NOT_STARTED` avant le 16/08/2026, 403 `CALENDAR_FINISHED` après le 10/09/2026.
+- Les photos d'un jour sont tirées **à la première consultation** (lazy) puis figées en base : recharger
+  la page ne change pas le plateau. Seul l'ordre est remélangé à chaque réponse.
+- Le tirage privilégie les photos non utilisées lors des 3 jours précédents ; quand le pool est trop
+  petit pour l'éviter, il complète par les photos vues le moins récemment.
+- Une photo taguée `exclude` dans la table `photos` est retirée du pool de tirage.
+
+## Paliers de difficulté
+
+Définis dans [src/config/calendar.constants.ts](src/config/calendar.constants.ts) :
+
+| Jours   | Paires | Grille |
+| ------- | ------ | ------ |
+| 1 → 5   | 6      | 3×4    |
+| 6 → 10  | 8      | 4×4    |
+| 11 → 15 | 10     | 4×5    |
+| 16 → 20 | 12     | 4×6    |
+| 21 → 26 | 15     | 5×6    |
+
+Le pool de photos doit contenir au moins 15 images (18 recommandées pour limiter les répétitions).
+
+## Récompenses
+
+Le catalogue est dans [src/database/rewards.seed.ts](src/database/rewards.seed.ts), appliqué dans
+l'ordre aux 26 jours. Types disponibles : `GAGE`, `ANECDOTE`, `PHOTO`, `MOT_DOUX`, `BON_MASSAGE`,
+`INDICE_MYSTERE`. Un contenu commençant par `{` ou `[` est renvoyé désérialisé (utilisé par le type `PHOTO`).
+
+Le seed n'écrase jamais un jour déjà présent en base : pour modifier une récompense après coup, il faut
+éditer la ligne correspondante dans SQLite (ou supprimer la base avant le 16 août).
+
+## Docker
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker compose up -d --build
 ```
 
-## Run tests
+Le dossier `./data` (base SQLite + photos) n'est jamais copié dans l'image : il est monté au runtime
+sur le volume `/app/data`.
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker build -t lucia-game-back .
+docker run -d -p 3000:3000 --env-file .env \
+  -e DATABASE_PATH=./data/database.sqlite -e PHOTOS_PATH=./data/photos \
+  -v "$PWD/data:/app/data" lucia-game-back
 ```
 
-## Deployment
+## Structure
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
 ```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+src/
+  auth/       login PIN + émission du JWT
+  common/     guard JWT global, décorateurs, utilitaires date/aléatoire
+  config/     configuration typée, validation .env, constantes du calendrier
+  database/   connexion SQLite, seed et catalogue de récompenses
+  days/       entité Day, tirage des photos, complétion, récompenses
+  photos/     entité Photo, service de fichiers protégé
+```

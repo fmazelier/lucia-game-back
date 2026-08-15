@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+# Données locales : base SQLite + photos privées, jamais committées
+/data
+
 # Logs
 logs
 *.log
