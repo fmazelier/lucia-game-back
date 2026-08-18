@@ -51,7 +51,6 @@ export const REWARDS_SEED: RewardSeed[] = [
     content:
       'Indice 1/5 : l’endroit que j’ai choisi se trouve sur une terre où certains arbres ont vu passer plus de royaumes que la plupart des pays d’Europe.',
   },
-
   // J7
   {
     type: RewardType.MOT_DOUX,
@@ -73,8 +72,9 @@ export const REWARDS_SEED: RewardSeed[] = [
   {
     type: RewardType.PHOTO,
     content: JSON.stringify({
-      photoId: 5,
-      caption: 'Le sauna se souvient encore de nous 🫠',
+      photoId: 19,
+      caption:
+        "Pendant que toi tu t'amusais avec ton œuf avec Nikita dans les parages 🤫",
     }),
   },
   // J11
@@ -104,7 +104,8 @@ export const REWARDS_SEED: RewardSeed[] = [
   // J15
   {
     type: RewardType.GAGE,
-    content: 'Envoie-moi la chanson sur laquelle tu danserais si tu osais.',
+    content:
+      'Envoie-moi une chanson sur laquelle tu oserais danser devant moi.',
   },
   // J16
   {
@@ -125,7 +126,6 @@ export const REWARDS_SEED: RewardSeed[] = [
     content:
       'Indice 3/5 : on peut y partir d’un relief assez haut pour trouver de l’air frais, puis finir quelques heures plus tard au bord d’une eau beaucoup plus chaude.',
   },
-
   // J19
   {
     type: RewardType.MOT_DOUX,
@@ -147,14 +147,14 @@ export const REWARDS_SEED: RewardSeed[] = [
   {
     type: RewardType.PHOTO,
     content: JSON.stringify({
-      photoId: 13,
-      caption: 'Pendant que toi tu jouais avec ton œuf 🤫',
+      photoId: 5,
+      caption: 'Le sauna se souvient encore de nous 🫠',
     }),
   },
   // J23
   {
     type: RewardType.BON_MASSAGE,
-    content: 'Un massage des mains, quand tu veux, sans conditions.',
+    content: 'Un massage sur la partie du corps de ton choix.',
   },
   // J24
   {
@@ -166,12 +166,12 @@ export const REWARDS_SEED: RewardSeed[] = [
   {
     type: RewardType.MOT_DOUX,
     content:
-      'Demain, c’est le dernier jour. Prépare-toi pour notre nuit de retrouvailles.',
+      'Demain, c’est le grand jour ! Prépare-toi pour notre nuit de retrouvailles ♥️',
   },
   // J26
   {
     type: RewardType.INDICE_MYSTERE,
     content:
-      'Indice 5/5 : non. Tu as tout ce qu’il te faut, et j’ai bien l’intention de te regarder hésiter jusqu’au dernier moment.',
+      'Indice 5/5 : non. Tu as tout ce qu’il te faut, et j’ai bien l’intention de te regarder hésiter jusqu’au dernier moment 😈',
   },
 ];
