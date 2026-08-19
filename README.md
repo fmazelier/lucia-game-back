@@ -36,9 +36,24 @@ avec le contenu réel de `PHOTOS_PATH`. Pour l'exécuter seul : `npm run seed`.
 | `VAPID_PRIVATE_KEY` | —                          | Clé privée Web Push                                          |
 | `VAPID_SUBJECT`     | `mailto:noreply@localhost` | Contact exigé par la spec (`mailto:` ou `https://`)          |
 | `REMINDER_CRON`     | `0 20 * * *`               | Heure du rappel quotidien, évaluée dans `TIMEZONE`           |
+| `LOG_LEVEL`         | `log`                      | `verbose`, `debug`, `log`, `warn`, `error` ou `fatal`        |
+| `LOG_JSON`          | `false`                    | Logs en JSON une ligne (collecteur externe)                  |
 
 L'application refuse de démarrer si `USER_LOGIN`, `USER_PIN` ou `JWT_SECRET` sont absents ou invalides.
 Sans les deux clés VAPID, les notifications push sont simplement désactivées (le reste fonctionne).
+
+## Logs
+
+Tout part sur la sortie standard du conteneur : dans CapRover, onglet **Deployment → App Logs**
+(ou `docker service logs -f srv-captain--lucia-api` en SSH).
+
+- Une ligne par requête HTTP terminée : `GET /days/today 200 12ms - 1.2.3.4` (contexte `HTTP`).
+- `4xx` en `warn`, `5xx` en `error`, `/health` en `verbose` pour ne pas noyer les logs avec le
+  healthcheck qui tape toutes les 30 s.
+- `LOG_LEVEL=verbose` (puis redémarrage de l'app) pour tout voir, `LOG_LEVEL=warn` pour ne garder
+  que les anomalies.
+- Les couleurs ANSI sont désactivées quand `NODE_ENV=production` (l'image Docker le fixe), sinon
+  CapRover afficherait des caractères parasites.
 
 ## Endpoints
 
@@ -160,6 +175,7 @@ VAPID_PUBLIC_KEY=...
 VAPID_PRIVATE_KEY=...
 VAPID_SUBJECT=mailto:toi@mondomaine.fr
 REMINDER_CRON=0 20 * * *
+LOG_LEVEL=log
 VERDACCIO_USER=...
 VERDACCIO_PASSWORD=...
 ```

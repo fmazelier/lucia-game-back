@@ -1,6 +1,7 @@
 import { plainToInstance } from 'class-transformer';
 import {
   IsBooleanString,
+  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -79,6 +80,16 @@ class EnvironmentVariables {
     message: 'REMINDER_CRON doit être une expression cron à 5 champs',
   })
   REMINDER_CRON?: string;
+
+  @IsOptional()
+  @IsIn(['verbose', 'debug', 'log', 'warn', 'error', 'fatal'], {
+    message: 'LOG_LEVEL doit valoir verbose, debug, log, warn, error ou fatal',
+  })
+  LOG_LEVEL?: string;
+
+  @IsOptional()
+  @IsBooleanString()
+  LOG_JSON?: string;
 }
 
 export function validateEnv(
