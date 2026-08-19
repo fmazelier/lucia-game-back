@@ -21,9 +21,9 @@ export interface DifficultyTier {
  */
 export const DIFFICULTY_TIERS: readonly DifficultyTier[] = [
   { fromDay: 1, pairs: 6, rows: 3, cols: 4 },
-  { fromDay: 6, pairs: 8, rows: 4, cols: 4 },
-  { fromDay: 11, pairs: 10, rows: 4, cols: 5 },
-  { fromDay: 16, pairs: 12, rows: 4, cols: 6 },
+  { fromDay: 5, pairs: 8, rows: 4, cols: 4 },
+  { fromDay: 10, pairs: 10, rows: 4, cols: 5 },
+  { fromDay: 15, pairs: 12, rows: 4, cols: 6 },
   { fromDay: 21, pairs: 15, rows: 5, cols: 6 },
 ];
 
