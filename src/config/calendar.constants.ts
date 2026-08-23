@@ -26,8 +26,8 @@ export const DIFFICULTY_TIERS: readonly DifficultyTier[] = [
   { fromDay: 13, pairs: 12, rows: 4, cols: 6 },
   { fromDay: 17, pairs: 15, rows: 5, cols: 6 },
   { fromDay: 21, pairs: 18, rows: 6, cols: 6 },
-  { fromDay: 24, pairs: 18, rows: 7, cols: 6 },
-  { fromDay: 26, pairs: 21, rows: 7, cols: 6 },
+  { fromDay: 24, pairs: 21, rows: 7, cols: 6 },
+  { fromDay: 26, pairs: 24, rows: 8, cols: 6 },
 ];
 
 /** Nombre de jours précédents dont on évite de réutiliser les photos lors d'un tirage. */
