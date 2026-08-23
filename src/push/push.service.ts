@@ -104,8 +104,8 @@ export class PushService implements OnModuleInit {
     }
 
     return this.broadcast({
-      title: 'Ta carte du jour t’attend',
-      body: `Jour ${day.dayIndex} — une nouvelle surprise à débloquer.`,
+      title: 'Il est l’heure',
+      body: `Jour ${day.dayIndex}. Une surprise t'attend`,
       url: '/game',
       tag: `reminder-${today}`,
     });
