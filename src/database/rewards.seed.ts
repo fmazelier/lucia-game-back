@@ -66,7 +66,7 @@ export const REWARDS_SEED: RewardSeed[] = [
   // J9
   {
     type: RewardType.GAGE,
-    content: 'Envoie un selfie en faisant ta plus belle grimace.',
+    content: 'Envoie-moi un selfie en faisant ta plus belle grimace 👹',
   },
   // J10
   {
@@ -74,7 +74,7 @@ export const REWARDS_SEED: RewardSeed[] = [
     content: JSON.stringify({
       photoId: 19,
       caption:
-        "Pendant que toi tu t'amusais avec ton œuf avec Nikita dans les parages 🤫",
+        'Pendant que toi tu prenais ton pied avec un œuf rose vibrant 🤫',
     }),
   },
   // J11
@@ -118,7 +118,8 @@ export const REWARDS_SEED: RewardSeed[] = [
   // J17
   {
     type: RewardType.BON_MASSAGE,
-    content: 'Un massage, huilés et entièrement nus.',
+    content:
+      "Un cuni qui ne s'arrêtera pas avant que tu aies perdu le contrôle de ton corps.",
   },
   // J18
   {
@@ -136,7 +137,7 @@ export const REWARDS_SEED: RewardSeed[] = [
   {
     type: RewardType.ANECDOTE,
     content:
-      'La tour Eiffel se dilate avec la chaleur : elle peut gagner jusqu’à 15 cm de hauteur en été et penche légèrement du côté opposé au soleil.',
+      'En 1911, la Joconde a été volée au Louvre. Pendant deux ans, les gens ont fait la queue juste pour voir le mur vide.',
   },
   // J21
   {
