@@ -74,7 +74,7 @@ Toutes les routes exigent `Authorization: Bearer <jwt>`, sauf `POST /auth/login`
 | `POST`  | `/push/test`           | Envoie une notification immédiate → `{ sent }`. Pratique pour valider un iPhone.         |
 | `GET`   | `/health`              | Sonde publique : `serverDate` faisant foi + bornes du calendrier.                        |
 
-Codes d'erreur métier renvoyés dans le corps des 403 : `CALENDAR_NOT_STARTED`, `CALENDAR_FINISHED`,
+Codes d'erreur métier renvoyés dans le corps des 403 : `CALENDAR_NOT_STARTED`,
 `DAY_NOT_COMPLETED`, `DAY_NOT_AVAILABLE_YET`.
 
 ### Côté Angular, pour les photos
@@ -92,7 +92,8 @@ this.http
 
 - La date du jour est calculée **exclusivement côté serveur** (`TIMEZONE`) : modifier l'horloge du
   téléphone n'a aucun effet, et compléter un jour futur est refusé.
-- Hors période : 403 `CALENDAR_NOT_STARTED` avant le 16/08/2026, 403 `CALENDAR_FINISHED` après le 10/09/2026.
+- Avant le 16/08/2026 : 403 `CALENDAR_NOT_STARTED`. Après le 10/09/2026, les jours restent rejouables
+  et `/days/today` renvoie le dernier jour du calendrier.
 - Les photos d'un jour sont tirées **à la première consultation** (lazy) puis figées en base : recharger
   la page ne change pas le plateau. Seul l'ordre est remélangé à chaque réponse.
 - Le tirage privilégie les photos non utilisées lors des 3 jours précédents ; quand le pool est trop

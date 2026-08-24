@@ -22,7 +22,7 @@ export class DaysController {
   /**
    * GET /days/today
    * Config du memory du jour : difficulté, grille et ids de photos (remélangés à chaque appel).
-   * 403 CALENDAR_NOT_STARTED avant le 16/08/2026, 403 CALENDAR_FINISHED après le 10/09/2026.
+   * 403 CALENDAR_NOT_STARTED avant le 16/08/2026 ; après le 10/09/2026, renvoie le dernier jour.
    * La date est déterminée par le serveur : changer l'horloge du téléphone n'a aucun effet.
    */
   @Get('today')
@@ -42,7 +42,7 @@ export class DaysController {
 
   /**
    * GET /days/:date/config
-   * Même charge utile que /days/today, pour rejouer un jour manqué.
+   * Même charge utile que /days/today, pour rejouer un jour manqué, même calendrier terminé.
    * 403 DAY_NOT_AVAILABLE_YET si la date est postérieure au jour courant serveur.
    */
   @Get(':date/config')

@@ -44,12 +44,17 @@ export class DaysService {
 
   /** Config du jour courant, avec tirage paresseux des photos à la première consultation. */
   getTodayConfig(): Promise<DayConfigResponse> {
-    return this.getDayConfig(this.getCurrentDate());
+    const today = this.getCurrentDate();
+
+    // Une fois le calendrier terminé, « aujourd'hui » retombe sur le dernier jour, rejouable.
+    return this.getDayConfig(
+      today > CALENDAR_END_DATE ? CALENDAR_END_DATE : today,
+    );
   }
 
-  /** Config d'un jour donné : un jour manqué reste rattrapable tant que le calendrier est ouvert. */
+  /** Config d'un jour donné : un jour manqué ou déjà joué reste rejouable indéfiniment. */
   async getDayConfig(date: string): Promise<DayConfigResponse> {
-    this.assertCalendarIsOpen(this.getCurrentDate());
+    this.assertCalendarHasStarted(this.getCurrentDate());
     this.assertDayIsReachable(date);
 
     const day = await this.ensurePhotoDraw(await this.findDayOrFail(date));
@@ -140,22 +145,12 @@ export class DaysService {
     }
   }
 
-  private assertCalendarIsOpen(today: string): void {
+  private assertCalendarHasStarted(today: string): void {
     if (today < CALENDAR_START_DATE) {
       throw new ForbiddenException({
         statusCode: 403,
         code: 'CALENDAR_NOT_STARTED',
         message: "Le calendrier n'a pas encore commencé, un peu de patience.",
-        startDate: CALENDAR_START_DATE,
-        endDate: CALENDAR_END_DATE,
-      });
-    }
-
-    if (today > CALENDAR_END_DATE) {
-      throw new ForbiddenException({
-        statusCode: 403,
-        code: 'CALENDAR_FINISHED',
-        message: 'Le calendrier est terminé. À très vite !',
         startDate: CALENDAR_START_DATE,
         endDate: CALENDAR_END_DATE,
       });
